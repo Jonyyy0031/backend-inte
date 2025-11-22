@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface Episode extends Document {
+export interface IEpisode extends Document {
     id: number;
     name: string;
     episode: string;
@@ -16,4 +16,4 @@ const EpisodeSchema: Schema = new Schema({
     favorite: { type: Boolean, default: false },
 });
 
-export const EpisodeModel = mongoose.model<Episode>('Episode', EpisodeSchema);
+export const EpisodeModel = mongoose.model<IEpisode>('Episode', EpisodeSchema);

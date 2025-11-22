@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors'
 import { connectToDatabase } from './database/connection';
+import episodeRoutes from './routes/episodeRoutes';
 
 export default async (): Promise<Application> => {
     const app = express();
@@ -18,6 +19,8 @@ export default async (): Promise<Application> => {
             timeStamp: new Date().toISOString()
          });
     });
+
+    app.use('/api', episodeRoutes);
 
     return app;
 }
