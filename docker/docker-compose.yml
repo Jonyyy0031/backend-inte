@@ -1,0 +1,21 @@
+services:
+  mongo-server:
+    image: mongo:latest
+    container_name: mongo-server
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=apidb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - mongodb_network
+volumes:
+  mongodb-data:
+networks:
+  mongodb_network:
