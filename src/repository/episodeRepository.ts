@@ -5,9 +5,15 @@ export class EpisodeRepository {
     async findAll(): Promise<IEpisode[]> {
         return EpisodeModel.find();
     }
+
     async findById(id: number): Promise<IEpisode | null> {
         return EpisodeModel.findOne({ id });
     }
+
+    async findByEpisodeCode(episodeCode: string): Promise<IEpisode | null> {
+        return EpisodeModel.findOne({ episode: episodeCode });
+    }
+    
     async create(episodeData: IEpisode): Promise<IEpisode> {
         const lastEpisode = await EpisodeModel.findOne().sort({ id: -1 });
         const newId = lastEpisode ? lastEpisode.id + 1 : 1;

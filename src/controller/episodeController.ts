@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { EpisodeService } from "../services/episodeService";
 
 export class EpisodeController {
@@ -8,74 +8,61 @@ export class EpisodeController {
         this.episodeService = new EpisodeService();
     }
 
-    async syncEpisodes(req: Request, res: Response): Promise<void> {
+    async syncEpisodes(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const episodes = await this.episodeService.syncEpisodes();
             res.status(200).json(episodes);
         } catch (error) {
-            res.status(500).json({ message: "Error syncing episodes", error });
+            next(error);
         }
     }
 
-    async getAllEpisodes(req: Request, res: Response): Promise<void> {
+    async getAllEpisodes(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const episodes = await this.episodeService.getAllEpisodes();
             res.status(200).json(episodes);
         } catch (error) {
-            res.status(500).json({ message: "Error fetching episodes", error });
+            next(error);
         }
     }
 
-    async getEpisodeById(req: Request, res: Response): Promise<void> {
+    async getEpisodeById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const id = parseInt(req.params.id, 10);
             const episode = await this.episodeService.getEpisodeById(id);
-            if (episode) {
-                res.status(200).json(episode);
-            } else {
-                res.status(404).json({ message: "Episode not found" });
-            }
+            res.status(200).json(episode);
         } catch (error) {
-            res.status(500).json({ message: "Error fetching episode", error });
+            next(error);
         }
     }
 
-    async createEpisode(req: Request, res: Response): Promise<void> {
+    async createEpisode(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const episodeData = req.body;
             const newEpisode = await this.episodeService.createEpisode(episodeData);
             res.status(201).json(newEpisode);
         } catch (error) {
-            res.status(500).json({ message: "Error creating episode", error });
+            next(error);
         }
     }
 
-    async updateFavoriteStatus(req: Request, res: Response): Promise<void> {
+    async updateFavoriteStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const id = parseInt(req.params.id, 10);
             const updatedEpisode = await this.episodeService.updateFavoriteStatus(id);
-            if (updatedEpisode) {
-                res.status(200).json(updatedEpisode);
-            } else {
-                res.status(404).json({ message: "Episode not found" });
-            }
+            res.status(200).json(updatedEpisode);
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: "Error updating favorite status", error });
+            next(error);
         }
     }
 
-    async deleteEpisode(req: Request, res: Response): Promise<void> {
+    async deleteEpisode(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const id = parseInt(req.params.id, 10);
-            const deletedEpisode = await this.episodeService.deleteEpisode(id);
-            if (deletedEpisode) {
-                res.status(200).json(deletedEpisode);
-            } else {
-                res.status(404).json({ message: "Episode not found" });
-            }
+            await this.episodeService.deleteEpisode(id);
+            res.status(204).send();
         } catch (error) {
-            res.status(500).json({ message: "Error deleting episode", error });
+            next(error);
         }
     }
 }

@@ -1,5 +1,6 @@
 import express, { Application } from 'express';
 import cors from 'cors'
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { connectToDatabase } from './database/connection';
 import episodeRoutes from './routes/episodeRoutes';
 
@@ -21,6 +22,9 @@ export default async (): Promise<Application> => {
     });
 
     app.use('/api', episodeRoutes);
+
+    app.use(notFoundHandler);
+    app.use(errorHandler);
 
     return app;
 }
